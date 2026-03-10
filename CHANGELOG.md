@@ -1,3 +1,6 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+- Initial release
+- FlipPage widget with 3D Y-axis rotation animation
+- Customizable front/back widgets and animation duration
+- Built-in floating FLIP button

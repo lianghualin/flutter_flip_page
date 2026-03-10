@@ -1,39 +1,52 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# flutter_flip_page
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A Flutter widget that flips between two child widgets with a 3D Y-axis rotation animation. Tap the built-in FLIP button to smoothly transition between a front and back page.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- 3D perspective flip animation around the Y-axis
+- Customizable front and back widgets
+- Configurable animation duration
+- Built-in floating FLIP button with directional arrows
+- Smooth easeInOut curve
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add `flutter_flip_page` to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  flutter_flip_page: ^0.0.1
+```
+
+Then run:
+
+```bash
+flutter pub get
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
 ```dart
-const like = 'sample';
+import 'package:flutter_flip_page/flutter_flip_page.dart';
+
+FlipPage(
+  front: Container(
+    color: Colors.blue.shade100,
+    child: const Center(child: Text('Front Page')),
+  ),
+  back: Container(
+    color: Colors.green.shade100,
+    child: const Center(child: Text('Back Page')),
+  ),
+  duration: const Duration(milliseconds: 500), // optional
+)
 ```
 
-## Additional information
+The `FlipPage` widget expands to fill its parent. Place it inside a `Scaffold` body or any sized container.
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+See the [example app](example/lib/main.dart) for a complete working demo.
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
