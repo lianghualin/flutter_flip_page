@@ -2,7 +2,7 @@ name: flutter_flip_page
 description: >-
   A Flutter widget that flips between two child widgets with a smooth 3D
   Y-axis rotation animation and a built-in floating flip button.
-version: 0.0.1
+version: 0.1.0
 homepage: https://github.com/lianghualin/flutter_flip_page
 repository: https://github.com/lianghualin/flutter_flip_page
 issue_tracker: https://github.com/lianghualin/flutter_flip_page/issues

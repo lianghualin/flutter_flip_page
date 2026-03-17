@@ -2,17 +2,49 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+/// Controller for externally triggering flips on a [FlipPage] widget.
+///
+/// Extends [ChangeNotifier] so consumers can listen for state changes
+/// and read [showingFront] to know which side is currently visible.
+class FlipPageController extends ChangeNotifier {
+  _FlipPageState? _state;
+
+  /// Whether the front side is currently showing.
+  bool get showingFront => _state?._showingFront ?? true;
+
+  /// Triggers a flip animation. No-op if the animation is already running.
+  void flip() => _state?._flip();
+
+  void _attach(_FlipPageState state) {
+    _state = state;
+  }
+
+  void _detach(_FlipPageState state) {
+    if (_state == state) _state = null;
+  }
+
+  void _notify() => notifyListeners();
+}
+
 class FlipPage extends StatefulWidget {
   const FlipPage({
     super.key,
     required this.front,
     required this.back,
     this.duration = const Duration(milliseconds: 500),
+    this.showButton = true,
+    this.controller,
   });
 
   final Widget front;
   final Widget back;
   final Duration duration;
+
+  /// Whether to show the built-in floating FLIP button.
+  final bool showButton;
+
+  /// Optional external controller for triggering flips.
+  final FlipPageController? controller;
 
   @override
   State<FlipPage> createState() => _FlipPageState();
@@ -36,14 +68,29 @@ class _FlipPageState extends State<FlipPage>
       curve: Curves.easeInOut,
     );
     _controller.addListener(() {
-      setState(() {
-        _showingFront = _controller.value < 0.5;
-      });
+      final nowFront = _controller.value < 0.5;
+      if (nowFront != _showingFront) {
+        setState(() {
+          _showingFront = nowFront;
+        });
+        widget.controller?._notify();
+      }
     });
+    widget.controller?._attach(this);
+  }
+
+  @override
+  void didUpdateWidget(covariant FlipPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?._detach(this);
+      widget.controller?._attach(this);
+    }
   }
 
   @override
   void dispose() {
+    widget.controller?._detach(this);
     _controller.dispose();
     super.dispose();
   }
@@ -83,27 +130,28 @@ class _FlipPageState extends State<FlipPage>
             },
           ),
           // Floating FLIP button
-          Positioned(
-            top: 16,
-            right: 16,
-            child: FilledButton.icon(
-              onPressed: _flip,
-              icon: _showingFront
-                  ? const SizedBox.shrink()
-                  : const Icon(Icons.arrow_back, size: 16),
-              label: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('FLIP'),
-                  if (_showingFront)
-                    const Padding(
-                      padding: EdgeInsets.only(left: 4),
-                      child: Icon(Icons.arrow_forward, size: 16),
-                    ),
-                ],
+          if (widget.showButton)
+            Positioned(
+              top: 16,
+              right: 16,
+              child: FilledButton.icon(
+                onPressed: _flip,
+                icon: _showingFront
+                    ? const SizedBox.shrink()
+                    : const Icon(Icons.arrow_back, size: 16),
+                label: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('FLIP'),
+                    if (_showingFront)
+                      const Padding(
+                        padding: EdgeInsets.only(left: 4),
+                        child: Icon(Icons.arrow_forward, size: 16),
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

@@ -22,13 +22,38 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class FlipPageDemo extends StatelessWidget {
+class FlipPageDemo extends StatefulWidget {
   const FlipPageDemo({super.key});
+
+  @override
+  State<FlipPageDemo> createState() => _FlipPageDemoState();
+}
+
+class _FlipPageDemoState extends State<FlipPageDemo> {
+  final _flipController = FlipPageController();
+
+  @override
+  void dispose() {
+    _flipController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('FlipPage Demo'),
+        actions: [
+          IconButton(
+            onPressed: _flipController.flip,
+            icon: const Icon(Icons.flip),
+            tooltip: 'Flip',
+          ),
+        ],
+      ),
       body: FlipPage(
+        controller: _flipController,
+        showButton: false,
         front: Container(
           color: Colors.blue.shade100,
           child: const Center(
